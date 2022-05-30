@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
+use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,12 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/products', [ProductController::class, 'index']);
+// Public Routes
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{id}', [ProductController::class, 'show']);
+Route::get('/products/{name}', [ProductController::class, 'search']);
 
-// Route::post('/products', [ProductController::class, 'store']);
+//Protected Routes
+Route::group(['middleware' =>['auth:santum']],function (){
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'delete']);
 
-Route::resource('products', ProductController::class);
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+} );
